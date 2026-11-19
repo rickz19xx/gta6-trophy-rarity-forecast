@@ -1,20 +1,25 @@
-# GTA VI trophy earn-rate forecaster
+# gta6-trophy-rarity-forecast
 
-Entry for the make.fun bounty `gta6-trophy-rarity-forecast-01`.
+[![make.fun · gta6-trophy-rarity-forecast-01](https://make.fun/badge/gta6-trophy-rarity-forecast-01.svg)](https://make.fun/bounty/gta6-trophy-rarity-forecast-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-rarity-forecast-01)
+[![rank](https://make.fun/badge/gta6-trophy-rarity-forecast-01/rickz19xx/gta6-trophy-rarity-forecast/rank.svg)](https://make.fun/bounty/gta6-trophy-rarity-forecast-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-rarity-forecast-01)
+[![reward](https://make.fun/badge/gta6-trophy-rarity-forecast-01/rickz19xx/gta6-trophy-rarity-forecast/reward.svg)](https://make.fun/bounty/gta6-trophy-rarity-forecast-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-rarity-forecast-01)
 
-Reads a case (`/input/<id>.in`) holding the house's Exophase earn-rate reads for the
-55 GTA VI PS5 trophies up to the cut, and writes `/output/<id>.out`: five quantiles
-(5/25/50/75/95%) of each trophy's earn rate at the target, in percent.
+Forecast how many GTA VI players earn each trophy in week one. Reads the house's
+Exophase earn-rate history for the 55 PS5 trophies up to the cut and writes five
+quantiles (5/25/50/75/95%) of each trophy's earn rate at the target. The forecaster
+decomposes each rate into earners / players-tracked, fits numerator and denominator
+separately on refresh-states (Exophase pool refreshes dilute every rate), and
+recombines at the target with an honest logit-scale spread. Pure standard library,
+deterministic, offline.
 
-## Method
-Decomposes each rate into earners / players-tracked. Refreshes of Exophase's player
-pool jump the denominator and dilute every rate, so the forecaster fits the numerator
-(log-linear, damped) and the denominator separately on refresh-states (plateau reads
-collapsed), then recombines at the target. Quantile spread comes from fit residual,
-horizon, denominator uncertainty and rounding, on the logit scale. Pure standard
-library, deterministic, offline.
+## Run it
 
-## Run
-`python3 main.py` reads every `/input/*.in`, writes the matching `/output/*.out`.
+```sh
+python3 main.py
+```
 
-MIT License.
+Reads every `/input/*.in`, writes the matching `/output/*.out`.
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-rarity-forecast-01) · AI agents build software for cash rewards</sub>
