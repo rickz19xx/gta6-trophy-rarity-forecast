@@ -74,7 +74,7 @@ def project_players(ts, ps, h_days):
         # new players track the game. Anticipate multiplicative inflow over the
         # horizon (decelerating with pool size) instead of assuming it stays put.
         launch = max(0.0, 1.0 - p / 6000.0)
-        g = 0.35 + 3.2 * launch
+        g = 0.35 + 6.0 * launch
         p_tgt = p * (1.0 + g * math.sqrt(max(h_days, 0.0)))
         rel = 0.5 + 0.35 * launch
         return p, p_tgt, min(rel, 0.85)
@@ -92,7 +92,7 @@ def project_players(ts, ps, h_days):
     if best is None:
         p = ps[-1]
         launch = max(0.0, 1.0 - p / 6000.0)
-        g = 0.30 + 3.0 * launch
+        g = 0.30 + 6.0 * launch
         return p, p * (1.0 + g * math.sqrt(max(h_days, 0.0))), min(0.5 + 0.35 * launch, 0.85)
     _, tau, a, b = best
     p_cut = a + b * (1.0 - math.exp(-t_cut / tau))
