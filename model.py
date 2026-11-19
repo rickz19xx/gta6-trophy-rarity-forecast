@@ -70,7 +70,14 @@ def project_players(ts, ps, h_days):
             pts.append((t, p))
     if len(pts) < 2:
         p = ps[-1]
-        return p, p * (1.0 + 0.35 * h_days), 0.5
+        # Launch-night prior: a small, stale pool is about to refresh upward as
+        # new players track the game. Anticipate multiplicative inflow over the
+        # horizon (decelerating with pool size) instead of assuming it stays put.
+        launch = max(0.0, 1.0 - p / 6000.0)
+        g = 0.35 + 3.2 * launch
+        p_tgt = p * (1.0 + g * math.sqrt(max(h_days, 0.0)))
+        rel = 0.5 + 0.35 * launch
+        return p, p_tgt, min(rel, 0.85)
     best = None
     for tau in [0.5, 0.8, 1.2, 1.8, 2.6, 3.6, 5.0, 7.0, 10.0, 14.0]:
         xs = [1.0 - math.exp(-t / tau) for t, _ in pts]
@@ -84,7 +91,9 @@ def project_players(ts, ps, h_days):
             best = (err, tau, a, b)
     if best is None:
         p = ps[-1]
-        return p, p * (1.0 + 0.3 * h_days), 0.5
+        launch = max(0.0, 1.0 - p / 6000.0)
+        g = 0.30 + 3.0 * launch
+        return p, p * (1.0 + g * math.sqrt(max(h_days, 0.0))), min(0.5 + 0.35 * launch, 0.85)
     _, tau, a, b = best
     p_cut = a + b * (1.0 - math.exp(-t_cut / tau))
     p_tgt = a + b * (1.0 - math.exp(-(t_cut + h_days) / tau))
